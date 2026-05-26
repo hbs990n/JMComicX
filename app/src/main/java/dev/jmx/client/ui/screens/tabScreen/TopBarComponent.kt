@@ -39,7 +39,7 @@ private fun HomeTopBarComponent() {
 private fun AboutTopBarComponent() {
     GlassTopBar(
         title = "About",
-        subtitle = "Liquid Glass Client"
+        subtitle = "关于"
     )
 }
 

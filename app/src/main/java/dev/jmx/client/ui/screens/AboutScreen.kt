@@ -280,7 +280,7 @@ private fun AppIntroCard() {
             )
             Spacer(modifier = Modifier.height(18.dp))
             RazorText(
-                text = "JMX 是面向 JMComic / 禁漫天堂的第三方 Android 客户端，专注于更轻、更直接的阅读体验，并以 Apple 风格排版和 Liquid Glass 视觉语言重新组织浏览、搜索、收藏与阅读流程。",
+                text = "JMX 是面向 JMComic / 禁漫天堂的第三方 Android 客户端。",
                 style = TextStyle(
                     color = palette.secondaryText,
                     fontSize = 14.sp,
@@ -324,7 +324,7 @@ private fun DeveloperCard() {
         ) {
             Image(
                 painter = painterResource(R.drawable.developer_avatar),
-                contentDescription = "ASakur",
+                contentDescription = "ASakura",
                 modifier = Modifier
                     .size(82.dp)
                     .graphicsLayer {
@@ -347,7 +347,7 @@ private fun DeveloperCard() {
             )
             Column(modifier = Modifier.weight(1f)) {
                 RazorText(
-                    text = "ASakur",
+                    text = "ASakura",
                     style = TextStyle(
                         brush = nameBrush,
                         fontSize = 31.sp,
@@ -368,7 +368,7 @@ private fun DeveloperCard() {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 RazorText(
-                    text = "负责 JMX 的客户端体验整合、Apple 风格化界面改造与 Liquid Glass 交互调校。",
+                    text = "这里似乎能写点什么🤔。",
                     style = TextStyle(
                         color = palette.secondaryText,
                         fontSize = 13.sp,
