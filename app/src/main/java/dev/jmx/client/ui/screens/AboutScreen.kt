@@ -53,7 +53,7 @@ import dev.jmx.client.ui.glass.LocalJmxGlassPalette
 import dev.jmx.client.ui.razor.AppleChevron
 import dev.jmx.client.ui.razor.RazorText
 
-private const val PROJECT_URL_PLACEHOLDER = "GitHub link pending"
+private const val PROJECT_URL = "https://github.com/Sakura-TWT/JMX"
 
 @Stable
 private data class CreditItem(
@@ -384,6 +384,7 @@ private fun DeveloperCard() {
 @Composable
 fun AboutScreen() {
     val mainNavController = LocalMainNavController.current
+    val uriHandler = LocalUriHandler.current
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -415,7 +416,13 @@ fun AboutScreen() {
 
             Column {
                 SectionLabel("PROJECT")
-                AboutGlassCard {
+                AboutGlassCard(
+                    modifier = Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = { uriHandler.openUri(PROJECT_URL) }
+                    )
+                ) {
                     RazorText(
                         text = "项目地址",
                         style = TextStyle(
@@ -427,7 +434,7 @@ fun AboutScreen() {
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     RazorText(
-                        text = PROJECT_URL_PLACEHOLDER,
+                        text = PROJECT_URL,
                         style = TextStyle(
                             color = LocalJmxGlassPalette.current.secondaryText,
                             fontSize = 13.sp,
