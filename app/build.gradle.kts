@@ -68,6 +68,15 @@ android {
         }
     }
 
+    signingConfigs {
+        create("jmxRelease") {
+            storeFile = rootProject.file("app/signing/jmx-release.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
         debug {
             isMinifyEnabled = true
@@ -78,7 +87,7 @@ android {
             )
         }
         release {
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("jmxRelease")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(

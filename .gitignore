@@ -16,6 +16,7 @@ local.properties
 release-key
 *.jks
 *.keystore
+!app/signing/jmx-release.keystore
 
 # Kotlin / Java
 .kotlin/

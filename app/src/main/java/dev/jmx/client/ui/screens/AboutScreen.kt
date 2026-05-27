@@ -2,15 +2,20 @@ package dev.jmx.client.ui.screens
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -218,24 +223,56 @@ private fun AboutSwitch(
 ) {
     val palette = LocalJmxGlassPalette.current
     val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+    val thumbOffset by animateDpAsState(
+        targetValue = if (checked) 34.dp else 3.dp,
+        animationSpec = spring(dampingRatio = 0.74f, stiffness = 520f),
+        label = "aboutAutoUpdateThumbOffset"
+    )
+    val trackColor by animateColorAsState(
+        targetValue = if (checked) {
+            palette.accent.copy(alpha = 0.92f)
+        } else {
+            palette.primaryText.copy(alpha = 0.14f)
+        },
+        animationSpec = tween(durationMillis = 180),
+        label = "aboutAutoUpdateTrackColor"
+    )
+    val borderColor by animateColorAsState(
+        targetValue = if (checked) {
+            palette.accent.copy(alpha = 0.28f)
+        } else {
+            palette.primaryText.copy(alpha = 0.16f)
+        },
+        animationSpec = tween(durationMillis = 180),
+        label = "aboutAutoUpdateBorderColor"
+    )
+    val thumbScale by animateFloatAsState(
+        targetValue = if (pressed) 0.90f else 1f,
+        animationSpec = spring(dampingRatio = 0.70f, stiffness = 620f),
+        label = "aboutAutoUpdateThumbScale"
+    )
     Box(
         modifier = Modifier
-            .size(width = 50.dp, height = 30.dp)
+            .size(width = 64.dp, height = 34.dp)
             .clip(RoundedCornerShape(999.dp))
+            .background(trackColor)
+            .border(1.dp, borderColor, RoundedCornerShape(999.dp))
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
                 onClick = { onCheckedChange(!checked) }
-            )
-            .background(
-                if (checked) palette.accent.copy(alpha = 0.92f) else palette.contentSurface.copy(alpha = 0.72f)
-            )
-            .padding(3.dp),
-        contentAlignment = if (checked) Alignment.CenterEnd else Alignment.CenterStart
+            ),
+        contentAlignment = Alignment.CenterStart
     ) {
         Box(
             modifier = Modifier
-                .size(24.dp)
+                .padding(start = thumbOffset)
+                .size(width = if (pressed) 29.dp else 27.dp, height = 27.dp)
+                .graphicsLayer {
+                    scaleX = thumbScale
+                    scaleY = thumbScale
+                }
                 .clip(CircleShape)
                 .background(Color.White.copy(alpha = 0.96f))
         )
