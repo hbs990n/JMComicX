@@ -7,6 +7,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import dev.jmx.client.data.models.AlbumSearchOrderFilter
 import dev.jmx.client.data.models.HomeAlbumSwiperItem
+import dev.jmx.client.data.models.SearchTagFilter
 import dev.jmx.client.data.models.WeekData
 import dev.jmx.client.repository.AlbumRepository
 import dev.jmx.client.data.remote.model.HomeSwiperAlbumListItemResponse
@@ -104,6 +105,15 @@ class AlbumViewModel(
         _searchAlbumFilterState.update {
             it.copy(
                 searchContent = searchContent
+            )
+        }
+    }
+
+    fun changeSearchTagFilter(tagFilter: SearchTagFilter) {
+        _searchAlbumIdState.update { null }
+        _searchAlbumFilterState.update {
+            it.copy(
+                tagFilter = tagFilter
             )
         }
     }

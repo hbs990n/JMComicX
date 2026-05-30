@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import dev.jmx.client.data.models.SearchTagFilter
 import dev.jmx.client.store.JmxDiagnostics
 import dev.jmx.client.ui.components.NavigationInputBlocker
 import dev.jmx.client.ui.screens.downloadScreen.DownloadScreen
@@ -136,6 +137,9 @@ fun AppScreen(
                     ),
                 ) { backStackEntry ->
                     val searchContent = backStackEntry.arguments!!.getString("searchContent")!!
+                    if (mainNavController.previousBackStackEntry?.destination?.route != "albumSearch") {
+                        albumViewModel.changeSearchTagFilter(SearchTagFilter())
+                    }
                     albumViewModel.changeSearchAlbumContent(searchContent)
                     AlbumSearchResultScreen()
                 }

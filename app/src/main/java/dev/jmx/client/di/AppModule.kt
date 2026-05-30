@@ -8,6 +8,7 @@ import dev.jmx.client.repository.impl.RemoteSettingRepositoryImpl
 import dev.jmx.client.storage.CookieStorage
 import dev.jmx.client.storage.HistorySearchStorage
 import dev.jmx.client.storage.LocalSettingStorage
+import dev.jmx.client.storage.SearchTagStorage
 import dev.jmx.client.storage.SecureStorage
 import dev.jmx.client.storage.UpdatePreferenceStorage
 import dev.jmx.client.storage.UserStorage
@@ -17,6 +18,7 @@ import dev.jmx.client.store.HistorySearchManager
 import dev.jmx.client.store.InitManager
 import dev.jmx.client.store.LocalSettingManager
 import dev.jmx.client.store.RemoteSettingManager
+import dev.jmx.client.store.SearchTagManager
 import dev.jmx.client.store.ToastManager
 import dev.jmx.client.store.UserManager
 import dev.jmx.client.task.AppInitTask
@@ -42,6 +44,7 @@ val appModule = module {
     single { CookieStorage(get()) }
     single { LocalSettingStorage(get()) }
     single { HistorySearchStorage(get()) }
+    single { SearchTagStorage(get()) }
     single { UpdatePreferenceStorage(get()) }
 
     single { RemoteSettingRepositoryImpl(get(), get()) } bind RemoteSettingRepository::class
@@ -50,6 +53,7 @@ val appModule = module {
     single { RemoteSettingManager(get()) } bind AppInitTask::class
     single { LocalSettingManager(get()) } bind AppInitTask::class
     single { HistorySearchManager(get()) } bind AppInitTask::class
+    single { SearchTagManager(get()) } bind AppInitTask::class
     single { ToastManager() }
     single { AppUpdateManager(get(), get(), get()) }
     single { DiagnosticLogManager(get(), get(), get(), get(), get()) }
