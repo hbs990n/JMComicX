@@ -7,12 +7,6 @@ JMX 是一个使用 Kotlin 与 Jetpack Compose 构建的 Android 第三方客户
 
 JMX 不是 JMComic / 禁漫天堂官方应用，也没有任何官方网站。当前仓库、GitHub Actions 构建产物与 GitHub Release 是唯一推荐获取渠道。
 
-<p align="center">
-  <img src="docs/screenshots/home.jpg" width="210" alt="JMX home" />
-  <img src="docs/screenshots/detail.jpg" width="210" alt="JMX detail" />
-  <img src="docs/screenshots/checkin.jpg" width="210" alt="JMX check-in" />
-  <img src="docs/screenshots/settings.jpg" width="210" alt="JMX settings" />
-</p>
 
 ## 项目状态
 
