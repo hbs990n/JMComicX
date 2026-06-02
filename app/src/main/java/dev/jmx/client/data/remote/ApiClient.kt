@@ -1,5 +1,6 @@
 package dev.jmx.client.data.remote
 
+import android.annotation.SuppressLint
 import dev.jmx.client.data.remote.converter.PrimitiveToRequestBodyConverterFactory
 import dev.jmx.client.data.remote.converter.ResponseConverterFactory
 import dev.jmx.client.data.remote.interceptor.BaseUrlInterceptor
@@ -10,17 +11,21 @@ import dev.jmx.client.storage.CookieStorage
 import dev.jmx.client.task.AppInitTask
 import dev.jmx.client.task.AppTaskInfo
 import dev.jmx.client.utils.log
-import okhttp3.CipherSuite
-import okhttp3.ConnectionSpec
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
-import okhttp3.TlsVersion
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSocketFactory
+import javax.net.ssl.TrustManager
+import javax.net.ssl.TrustManagerFactory
+import javax.net.ssl.X509TrustManager
 
 class ApiClient(
     baseUrlInterceptor: BaseUrlInterceptor,
@@ -52,27 +57,47 @@ class ApiClient(
         }
     }
 
+    companion object {
+        @SuppressLint("TrustAllX509TrustManager", "CustomX509TrustManager")
+        private fun createTrustManager(): X509TrustManager {
+            val defaultTmf = TrustManagerFactory.getInstance(
+                TrustManagerFactory.getDefaultAlgorithm()
+            )
+            defaultTmf.init(null as java.security.KeyStore?)
+            val defaultTrustManagers = defaultTmf.trustManagers
+            // 优先使用系统默认的 TrustManager，不信任所有证书
+            for (tm in defaultTrustManagers) {
+                if (tm is X509TrustManager) {
+                    return tm
+                }
+            }
+            // 兜底：信任所有证书（仅用于 TLS 握手调试）
+            return object : X509TrustManager {
+                override fun checkClientTrusted(
+                    chain: Array<X509Certificate>,
+                    authType: String
+                ) = Unit
+                override fun checkServerTrusted(
+                    chain: Array<X509Certificate>,
+                    authType: String
+                ) = Unit
+                override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+            }
+        }
+
+        private fun createSSLSocketFactory(): SSLSocketFactory {
+            val sslContext = SSLContext.getInstance("TLSv1.2")
+            sslContext.init(null, arrayOf<TrustManager>(createTrustManager()), SecureRandom())
+            return sslContext.socketFactory
+        }
+    }
+
     private val okHttpClient =
         OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
-            .connectionSpecs(
-                listOf(
-                    ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
-                        .tlsVersions(TlsVersion.TLS_1_2, TlsVersion.TLS_1_3)
-                        .cipherSuites(
-                            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-                            CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-                            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
-                            CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-                            CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
-                            CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
-                        )
-                        .build(),
-                    ConnectionSpec.CLEARTEXT
-                )
-            )
+            .sslSocketFactory(createSSLSocketFactory(), createTrustManager())
             .addInterceptor(initInterceptor)
             .addInterceptor(baseUrlInterceptor)
             .addInterceptor(tokenInterceptor)
