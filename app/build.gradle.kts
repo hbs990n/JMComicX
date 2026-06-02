@@ -1,4 +1,4 @@
-﻿import java.util.Properties
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlin.compose)
@@ -98,10 +98,8 @@ android {
     }
     splits {
         abi {
-            isEnable = true
-            reset()
-            include("arm64-v8a")
-            isUniversalApk = false
+            isEnable = false
+            isUniversalApk = true
         }
     }
     compileOptions {
