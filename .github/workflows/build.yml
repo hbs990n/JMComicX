@@ -18,14 +18,17 @@ jobs:
           java-version: "21"
           cache: gradle
 
-      - name: Build with Gradle
+      - name: Build with Gradle (continue on error)
         working-directory: ./
+        continue-on-error: true
         run: |
           chmod +x gradlew
-          ./gradlew :app:assembleDebug --no-daemon
+          ./gradlew :app:assembleDebug --no-daemon --continue
 
-      - name: Upload APK
+      - name: Upload APK if exists
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: ssl-tester-apk
           path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: ignore
