@@ -57,7 +57,7 @@ android {
 
     defaultConfig {
         applicationId = "dev.jmx.client"
-        minSdk = 31
+        minSdk = 26
         targetSdk = 36
         versionCode = versionCodeProp
         versionName = versionNameProp
